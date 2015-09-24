@@ -4,8 +4,7 @@ import (
   "log"
   "encoding/json"
   "net/http"
-  "github.com/timperman/bouncer/network"
-  "github.com/timperman/bouncer/volume"
+  "github.com/timperman/bouncer/driver"
 )
 
 type Handshake struct {
@@ -15,17 +14,15 @@ type Handshake struct {
 func Start(addr string) {
   http.HandleFunc("/Plugin.Activate", activate)
 
-  v := volume.New()
-  n := network.New()
+  v := driver.New("/")
 
   m := map[string]map[string]func(http.ResponseWriter, *http.Request){
     "POST": {
-      "/NetworkDriver.CreateNetwork", n.CreateNetwork),
-      "/VolumeDriver.Create", v.Create),
-      "/VolumeDriver.Remove", v.Remove),
-      "/VolumeDriver.Mount", v.Mount),
-      "/VolumeDriver.Unmount", v.Unmount),
-      "/VolumeDriver.Path", v.Path,
+      "/VolumeDriver.Create": v.Create,
+      "/VolumeDriver.Remove": v.Remove,
+      "/VolumeDriver.Mount": v.Mount,
+      "/VolumeDriver.Unmount": v.Unmount,
+      "/VolumeDriver.Path": v.Path,
     },
   }
 
@@ -39,6 +36,7 @@ func Start(addr string) {
 }
 
 func activate(w http.ResponseWriter, r *http.Request) {
+  log.Println("Activate call")
   if b, err := json.Marshal(&Handshake{ Implements: []string{ "VolumeDriver" }, }); err == nil {
     w.Write(b)
   }

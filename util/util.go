@@ -1,8 +1,9 @@
-package plugin
+package util
 
 import (
   "log"
   "encoding/json"
+  "net/http"
 )
 
 func JSONDecode(r *http.Request) (map[string]interface{}, error) {
@@ -10,7 +11,7 @@ func JSONDecode(r *http.Request) (map[string]interface{}, error) {
   if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
     return nil, err
   }
-  return &req, nil
+  return req, nil
 }
 
 func JSONResponse(w http.ResponseWriter, r map[string]interface{}) {
