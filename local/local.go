@@ -6,11 +6,11 @@ package local
 import (
 	"errors"
 	"fmt"
+	"github.com/timperman/bouncer/volume"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
-  "github.com/timperman/bouncer/volume"
 )
 
 // VolumeDataPathName is the name of the directory where the volume data is stored.
